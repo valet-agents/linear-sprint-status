@@ -1,0 +1,68 @@
+name: linear-sprint-status
+display_name: Linear Sprint Status
+description: >-
+  Runs the standup so the team doesn't have to. Every weekday at
+  10am, posts the active Linear cycle's status to whichever Slack
+  channel the bot has been invited to, and answers Linear questions
+  in Slack on @mention.
+category: product
+
+story:
+  hero: "A standup that runs itself, every morning in Slack."
+  subheadline: >-
+    Reads Linear before the team wakes up and posts what's shipping,
+    what's blocked, and what's at risk this cycle. @mention it any
+    time for a follow-up.
+  steps:
+    - role: trigger
+      title: "10am hits."
+      body: >-
+        The cron fires Monday through Friday. No standup link to
+        click, no one to nudge.
+    - role: action
+      title: "It reads the active cycle."
+      body: >-
+        Pulls every issue in the cycle, groups by state, surfaces
+        what's shipping today, what's at risk, and what's blocked.
+      catalog: linear-mcp
+    - role: outcome
+      title: "A bulleted standup, posted where you invited it."
+      body: >-
+        Identifiers, owners, and links — under 2,500 characters.
+        @mention it back to dig into anything.
+      catalog: slack
+
+connectors:
+  - catalog: linear-mcp
+    description: >-
+      The Linear MCP server, OAuth-authenticated. The agent reads
+      the active cycle, lists and filters issues, and follows
+      blocking relations. Writes (create, update, assign, comment)
+      only happen when a Slack user explicitly asks.
+    ui:
+      headline: "Connect Linear with one click."
+      blurb: >-
+        OAuth into Linear — no API token to paste. The agent uses
+        your team's permissions to read cycles and answer questions
+        about issues.
+      done_note: "Linear connected"
+
+channels:
+  - catalog: slack
+    description: >-
+      The agent gets its own Slack bot. Invite it to whichever
+      channels you want the daily standup in, and to any other
+      channel where teammates should be able to @mention it for
+      ad-hoc Linear questions.
+    ui:
+      headline: "Give Sprint Status a Slack bot."
+      blurb: >-
+        The agent posts the daily standup to every channel you
+        invite it to. Invite it to one focused channel, or several —
+        whatever matches how your team works.
+      done_note: "Bot ready — invite it to a channel"
+
+  - type: cron
+    cron: "0 10 * * 1-5"
+    timezone: America/Los_Angeles
+    description: "Fires the daily sprint standup at 10am Pacific, Monday through Friday."
