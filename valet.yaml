@@ -7,6 +7,9 @@ description: >-
   in Slack on @mention.
 category: product
 
+example:
+  prompt: "What's at risk for this sprint?"
+
 story:
   hero: "A standup that runs itself, every morning in Slack."
   subheadline: >-
